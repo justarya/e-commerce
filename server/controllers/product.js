@@ -4,6 +4,10 @@ class Product {
   static findAll(req,res,next){
     let whereData = {};
     if(req.query.search) whereData.name = {$regex: new RegExp(`${req.query.search}`,'i')};
+    if(req.query.category){
+      whereData.category = {$in: JSON.parse(req.query.category)};
+      whereData._id = {$ne: req.query.id};
+    }
     Model.Product
       .find(whereData)
       .then((data) => {
@@ -32,7 +36,7 @@ class Product {
     Model.User
       .findById(req.decode._id)
       .then(user => {
-        console.log(user);
+        console.log(req.body);
         if(user.role === 'seller'){
           Model.Product
             .create({

@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 
 const mode = process.env.NODE_ENV || 'hacktiv8'
 
-mongoose.connect('mongodb://localhost:27017/task_ecommerce_'+mode, {useNewUrlParser: true})
+mongoose.connect('mongodb+srv://justarya:mongodbmantapluarbiasa@decluster-fjdpq.gcp.mongodb.net/ecommerce-hacktive?retryWrites=true&w=majority', {useNewUrlParser: true})
   .then(() => console.log('Connected to Database'))
   .catch(err => console.log('Error Connecting to database | Error:'+err));
 
