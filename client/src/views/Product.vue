@@ -17,12 +17,15 @@
           ></p>
         </v-col>
       </v-row>
-      <v-row class="mt-4">
-        <h1 class="display-1">Recomended Product</h1>
-        <div id="recomend-product">
-          <product-item></product-item>
-        </div>
-      </v-row>
+      <div id="recomend-product">
+        <!-- <v-row class="mt-4"> -->
+          <h1 class="display-1">Recomended Product</h1>
+          <v-row v-if="productRecomendation.length > 0">
+            <product-item v-for="product in productRecomendation" :key="product._id" :product="product" @cart:add="$emit('cart:add',$event)"></product-item>
+          </v-row>
+          <p class="pa-4" v-else>No Recomendation Product</p>
+        <!-- </v-row> -->
+      </div>
     </v-container>
   </div>
 </template>
@@ -36,20 +39,23 @@ export default {
   data(){
     return {
       product: '',
+      productRecomendation: '',
     }
   },
-  created() {
-    this.fetchProduct();
-    this.fetchRecomendProduct(ProductItem.category);
+  mounted() {
+    this.fetchProduct(() => {
+      console.log(this.product);
+      this.fetchRecomendProduct(this.product.category);
+    });
   },
   methods: {
-    fetchProduct() {
-      console.log(this.$route.params.id)
+    fetchProduct(cb) {
       axios({
         url: '/products/'+this.$route.params.id,
       })
       .then(({data}) => {
         this.product = data;
+        cb();
       })
       .catch(({ response }) => {
         this.$swal({
@@ -60,7 +66,20 @@ export default {
       });
     },
     fetchRecomendProduct(category) {
-      
+      let arrStr = encodeURIComponent(JSON.stringify(category));
+      axios({
+        url: '/products?category='+arrStr+'&id='+this.product._id,
+      })
+      .then(({data}) => {
+        this.productRecomendation = data;
+      })
+      .catch(({ response }) => {
+        this.$swal({
+          type: 'error',
+          title: 'Error!',
+          text: response.data.error,
+        });
+      });
     },
     formatPrice(value) {
       let val = (value/1).toFixed(2).replace('.', ',')
@@ -95,6 +114,14 @@ export default {
         });
       });
     },
+  },
+  watch: {
+    '$route.params.id'(val){
+      this.fetchProduct(() => {
+        console.log(this.product);
+        this.fetchRecomendProduct(this.product.category);
+      });
+    }
   }
 };
 </script>
