@@ -3,7 +3,7 @@
 # Costumer Authentication
 In order to prevent data leaked. User need  Authentication in some places. Authentications that can be use are Register / Login. 
 
-If **Authentication is required**, add `token` on headers. You can get `token` from Authentication.
+If **Authentication is required**, add `access_token` on headers. You can get `access_token` from Authentication.
 Headers:
 ```
 {
@@ -333,6 +333,28 @@ Response:
 }
 ```
 
+## Payment
+Url: `/api/cart/:id/payment/`
+Method: `PATCH`
+Status: **`200`**
+Authentication: **`Required`**
+
+Error:
+- **`404`**
+  - Cart not found
+
+Response:
+```
+{
+  _id: i9fn29h82fh4r2083,
+  productId: f8209ru092u4092,
+  status: 'paid',
+  userId: d0j923k32jr932904
+  createdAt: date,
+  updatedAt: date,
+}
+```
+
 ## Find All Cart
 Url: `/api/cart/`
 Method: `GET`
@@ -354,6 +376,28 @@ Response:
 ]
 ```
 
+
+## Get Checkout List
+Url: `/api/cart/checkout`
+Method: `GET`
+Status: **`200`**
+Authentication: **`Required`**
+
+Response:
+```
+[
+  {
+    _id: i9fn29h82fh4r2083,
+    productId: f8209ru092u4092,
+    status: 'paid',
+    userId: d0j923k32jr932904
+    createdAt: date,
+    updatedAt: date,
+  },
+  ...
+]
+```
+
 ## Get History Cart
 Url: `/api/cart/history`
 Method: `GET`
@@ -366,7 +410,7 @@ Response:
   {
     _id: i9fn29h82fh4r2083,
     productId: f8209ru092u4092,
-    status: 'hold',
+    status: 'paid',
     userId: d0j923k32jr932904
     createdAt: date,
     updatedAt: date,
